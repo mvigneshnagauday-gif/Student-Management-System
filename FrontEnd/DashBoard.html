@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="DashBoard.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="side-bar">
+            <h2>Student Management System</h2>
+
+            <ul>
+                <li>
+                    <a href="DashBoard.html">
+                        <i class="fa-solid fa-house"></i>
+                        Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a href="Student.html">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        Students
+                    </a>
+                </li>
+
+                <li>
+                    <a href="DepartmentList.html">
+                        <i class="fa-solid fa-building-columns"></i>
+                        Departments
+                    </a>
+                </li>
+
+                <li>
+                    <a href="ViewStudent.html">
+                        <i class="fa-solid fa-user"></i>
+                        Profile
+                    </a>
+                </li>
+
+                <li>
+                    <a href="Login.html">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="navbar">
+                <h2>DashBoard</h2>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <h3>Total students</h3>
+                    <p id="totalStudents">-</p>
+                    <a href="Student.html" class="view-btn">View Details</a>
+                </div>
+                <div class="card">
+                    <h3>Departments</h3>
+                    <p id="totalDepartments">-</p>
+                    <a href="DepartmentList.html" class="view-btn">View Details</a>
+                </div>
+                <div class="card">
+                    <h3>courses</h3>
+                    <p id="totalCourses">-</p>
+                    <a href="DepartmentList.html" class="view-btn">View Details</a>
+                </div>
+                <div class="card">
+                    <h3>Total Faculty</h3>
+                    <p id="totalFaculty">-</p>
+                    <a href="#" class="view-btn" style="pointer-events: none; opacity: 0.5;">View Details</a>
+                </div>
+            </div>
+            <div class="dashboard-content">
+                <div class="recent-students">
+                    <h2>Recent Students</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentStudentsBody">
+                            <tr>
+                                <td colspan="4">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="quick-actions">
+                    <h2>Quick Actions</h2>
+                    <button onclick="window.location.href='AddStudent.html'">
+                        Add Student
+                    </button>
+                    <button onclick="window.location.href='Student.html'">View Student</button>
+                    <button onclick="window.location.href='AddDepartment.html'">
+                        Add Department
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <script>
+        const STUDENT_API = "http://localhost:8080/api/students";
+        const DEPARTMENT_API = "http://localhost:8080/api/departments";
+        const DASHBOARD_API = "http://localhost:8080/api/dashboard";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadSummary();
+            loadRecentStudents();
+        });
+
+        // Load total counts
+        async function loadSummary() {
+            try {
+                const response = await fetch(`${DASHBOARD_API}/summary`);
+                if (!response.ok) throw new Error("Failed to fetch summary");
+
+                const summary = await response.json();
+                document.getElementById("totalStudents").textContent = summary.totalStudents;
+                document.getElementById("totalDepartments").textContent = summary.totalDepartments;
+                document.getElementById("totalCourses").textContent = summary.totalDepartments; // reused as courses count
+                document.getElementById("totalFaculty").textContent = summary.totalFaculty;
+
+            } catch (error) {
+                console.error("Error loading summary:", error);
+                document.getElementById("totalStudents").textContent = "N/A";
+                document.getElementById("totalDepartments").textContent = "N/A";
+                document.getElementById("totalCourses").textContent = "N/A";
+                document.getElementById("totalFaculty").textContent = "N/A";
+            }
+        }
+
+        async function loadRecentStudents() {
+            const tbody = document.getElementById("recentStudentsBody");
+
+            try {
+                const response = await fetch(`${STUDENT_API}/getallstudentDetails`);
+                if (!response.ok) throw new Error("Failed to fetch students");
+
+                const students = await response.json();
+                const recent = students.slice(-5).reverse(); // last 5 added, newest first
+
+                tbody.innerHTML = "";
+
+                if (recent.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4">No students yet.</td></tr>`;
+                    return;
+                }
+
+                recent.forEach(student => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${student.id}</td>
+                        <td>${student.fullName}</td>
+                        <td>${student.department}</td>
+                        <td>${student.email}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error("Error loading recent students:", error);
+                tbody.innerHTML = `<tr><td colspan="4">Could not load students.</td></tr>`;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

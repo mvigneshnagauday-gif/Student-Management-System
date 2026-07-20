@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Department</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="AddStudent.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Sidebar -->
+        <aside class="side-bar">
+
+            <div class="sidebar-brand">
+                <h2>Student Management System</h2>
+            </div>
+
+            <ul>
+
+                <li>
+                    <a href="Dashboard.html">
+                        <i class="fa-solid fa-house"></i>
+                        Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a href="Student.html">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        Students
+                    </a>
+                </li>
+
+                <li class="active">
+                    <a href="DepartmentList.html">
+                        <i class="fa-solid fa-building-columns"></i>
+                        Departments
+                    </a>
+                </li>
+
+                <li>
+                    <a href="ViewStudent.html">
+                        <i class="fa-solid fa-user"></i>
+                        Profile
+                    </a>
+                </li>
+
+                <li>
+                    <a href="Login.html">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Logout
+                    </a>
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <div class="navbar">
+                <div class="menu-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </div>
+
+            <div class="page-header">
+                <h2>Add Department</h2>
+                <div class="breadcrumb">
+                    <span class="link-muted">Home</span> /
+                    <span class="link-muted">Departments</span> /
+                    <span class="link-active">Add</span>
+                </div>
+            </div>
+
+            <div class="form-container-card">
+
+                <form id="departmentForm">
+
+                    <div class="form-group">
+                        <label for="name">Department Name</label>
+                        <input type="text" id="name" name="name" placeholder="Enter department name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="code">Department Code</label>
+                        <input type="text" id="code" name="code" placeholder="e.g. CSE, IT, ECE" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="3" placeholder="Enter description"
+                            required></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-save">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            Save
+                        </button>
+
+                        <button type="reset" class="btn btn-reset">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            Reset
+                        </button>
+
+                        <button type="button" class="btn btn-cancel"
+                            onclick="window.location.href='DepartmentList.html'">
+                            <i class="fa-solid fa-xmark"></i>
+                            Cancel
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        const API_BASE_URL = "http://localhost:8080/api/departments";
+
+        document.getElementById("departmentForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const departmentData = {
+                name: document.getElementById("name").value.trim(),
+                code: document.getElementById("code").value.trim(),
+                description: document.getElementById("description").value.trim()
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/addDepartment`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(departmentData)
+                });
+
+                if (response.ok) {
+                    const saved = await response.json();
+                    alert(`Department "${saved.name}" added successfully (ID: ${saved.id})`);
+                    document.getElementById("departmentForm").reset();
+                    window.location.href = "DepartmentList.html";
+
+                } else if (response.status === 400) {
+                    const errorBody = await response.json();
+                    alert("Validation error: " + JSON.stringify(errorBody));
+
+                } else {
+                    alert(`Error ${response.status}: Something went wrong.`);
+                }
+
+            } catch (error) {
+                console.error("Connection error:", error);
+                alert("Could not connect to the server. Is the backend running?");
+            }
+        });
+    </script>
+
+</body>
+
+</html>

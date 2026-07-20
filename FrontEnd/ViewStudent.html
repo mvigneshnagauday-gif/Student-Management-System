@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Student</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="ViewStudent.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="side-bar">
+
+            <h2>Student Management System</h2>
+
+            <ul>
+
+                <li>
+                    <a href="Dashboard.html">
+                        <i class="fa-solid fa-house"></i>
+                        Dashboard
+                    </a>
+                </li>
+
+                <li class="active">
+                    <a href="Student.html">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        Students
+                    </a>
+                </li>
+
+                <li>
+                    <a href="DepartmentList.html">
+                        <i class="fa-solid fa-building-columns"></i>
+                        Departments
+                    </a>
+                </li>
+
+                <li>
+                    <a href="Profile.html">
+                        <i class="fa-solid fa-user"></i>
+                        Profile
+                    </a>
+                </li>
+
+                <li>
+                    <a href="Login.html">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Logout
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+        <div class="main-content">
+
+            <div class="page-header">
+
+                <h2>Student Details</h2>
+
+                <div class="breadcrumb">
+                    Home / Students / View
+                </div>
+
+            </div>
+
+            <div class="student-card">
+
+                <h3>Student Information</h3>
+
+                <div class="student-details">
+
+                    <div class="detail-row">
+                        <span class="label">Student ID</span>
+                        <span class="value" id="studentId">-</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Full Name</span>
+                        <span class="value" id="fullName">-</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Email</span>
+                        <span class="value" id="email">-</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Phone</span>
+                        <span class="value" id="phone">-</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Department</span>
+                        <span class="value" id="department">-</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Gender</span>
+                        <span class="value" id="gender">-</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Date of Birth</span>
+                        <span class="value" id="dob">-</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <span class="label">Address</span>
+                        <span class="value" id="address">-</span>
+                    </div>
+
+                </div>
+
+                <div class="button-group">
+
+                    <a href="Student.html">
+                        <button class="back-btn">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Back
+                        </button>
+                    </a>
+
+                    <button class="edit-btn" id="editBtn">
+                        <i class="fa-solid fa-pen"></i>
+                        Edit
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const API_BASE_URL = "http://localhost:8080/api/students";
+
+        // Get the id from the URL, e.g. ViewStudent.html?id=5
+        const params = new URLSearchParams(window.location.search);
+        const studentId = params.get("id");
+
+        document.addEventListener("DOMContentLoaded", loadStudent);
+
+        async function loadStudent() {
+            if (!studentId) {
+                alert("No student ID provided in the URL.");
+                window.location.href = "Student.html";
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/${studentId}`);
+
+                if (response.ok) {
+                    const student = await response.json();
+                    renderStudent(student);
+
+                } else if (response.status === 404) {
+                    alert("Student not found.");
+                    window.location.href = "Student.html";
+
+                } else {
+                    alert(`Error ${response.status}: Something went wrong.`);
+                }
+
+            } catch (error) {
+                console.error("Connection error:", error);
+                alert("Could not connect to the server. Is the backend running?");
+            }
+        }
+
+        function renderStudent(student) {
+            document.getElementById("studentId").textContent = student.id;
+            document.getElementById("fullName").textContent = student.fullName;
+            document.getElementById("email").textContent = student.email;
+            document.getElementById("phone").textContent = student.phone;
+            document.getElementById("department").textContent = student.department;
+            document.getElementById("gender").textContent = student.gender;
+            document.getElementById("dob").textContent = student.dob;
+            document.getElementById("address").textContent = student.address;
+        }
+
+        // Edit button redirects to Update.html, passing the same id
+        document.getElementById("editBtn").addEventListener("click", function () {
+            window.location.href = `Update.html?id=${studentId}`;
+        });
+    </script>
+
+</body>
+
+</html>

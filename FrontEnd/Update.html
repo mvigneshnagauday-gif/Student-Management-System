@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Student</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="AddStudent.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- Sidebar -->
+        <aside class="side-bar">
+
+            <div class="sidebar-brand">
+                <h2>Student Management System</h2>
+            </div>
+
+            <ul>
+
+                <li>
+                    <a href="Dashboard.html">
+                        <i class="fa-solid fa-house"></i>
+                        Dashboard
+                    </a>
+                </li>
+
+                <li class="active">
+                    <a href="Student.html">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        Students
+                    </a>
+                </li>
+
+                <li>
+                    <a href="DepartmentList.html">
+                        <i class="fa-solid fa-building-columns"></i>
+                        Departments
+                    </a>
+                </li>
+
+                <li>
+                    <a href="ViewStudent.html">
+                        <i class="fa-solid fa-user"></i>
+                        Profile
+                    </a>
+                </li>
+
+                <li>
+                    <a href="Login.html">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Logout
+                    </a>
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Navbar -->
+            <div class="navbar">
+
+                <div class="menu-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+
+            </div>
+
+            <!-- Page Header -->
+            <div class="page-header">
+
+                <h2>Update Student</h2>
+
+                <div class="breadcrumb">
+                    <span class="link-muted">Home</span> /
+                    <span class="link-muted">Students</span> /
+                    <span class="link-active">Update</span>
+                </div>
+
+            </div>
+
+            <!-- Form Card -->
+            <div class="form-container-card">
+
+                <form id="studentForm">
+
+                    <div class="form-grid">
+
+                        <!-- Full Name -->
+                        <div class="form-group">
+
+                            <label for="fullName">Full Name</label>
+
+                            <input type="text" id="fullName" name="fullName" placeholder="Enter full name" required>
+
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+
+                            <label for="email">Email</label>
+
+                            <input type="email" id="email" name="email" placeholder="Enter email" required>
+
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="form-group">
+
+                            <label for="phone">Phone</label>
+
+                            <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required>
+
+                        </div>
+
+                        <!-- Department -->
+                        <div class="form-group">
+
+                            <label for="department">Department</label>
+
+                            <select id="department" name="department" required>
+
+                                <option value="">-- Select Department --</option>
+
+                                <option value="CSE">Computer Science</option>
+
+                                <option value="ECE">Electronics & Communication</option>
+
+                                <option value="EEE">Electrical & Electronics</option>
+
+                                <option value="IT">Information Technology</option>
+
+                                <option value="MECH">Mechanical</option>
+
+                                <option value="CIVIL">Civil</option>
+
+                            </select>
+
+                        </div>
+
+                        <!-- Date of Birth -->
+                        <div class="form-group">
+
+                            <label for="dob">Date of Birth</label>
+
+                            <input type="date" id="dob" name="dob" required>
+
+                        </div>
+
+                        <!-- Address -->
+                        <div class="form-group">
+
+                            <label for="address">Address</label>
+
+                            <textarea id="address" name="address" rows="3" placeholder="Enter address"
+                                required></textarea>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Gender -->
+                    <fieldset class="gender-section">
+
+                        <legend>Gender</legend>
+
+                        <div class="gender-options">
+
+                            <label>
+                                <input type="radio" name="gender" value="Male">
+
+                                Male
+                            </label>
+
+                            <label>
+                                <input type="radio" name="gender" value="Female">
+
+                                Female
+                            </label>
+
+                            <label>
+                                <input type="radio" name="gender" value="Other">
+
+                                Other
+                            </label>
+
+                        </div>
+
+                    </fieldset>
+
+                    <!-- Buttons -->
+                    <div class="form-actions">
+
+                        <button type="submit" class="btn btn-save">
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            Update Student
+
+                        </button>
+
+                        <button type="reset" class="btn btn-reset">
+
+                            <i class="fa-solid fa-rotate-left"></i>
+                            Reset
+
+                        </button>
+
+                        <button type="button" class="btn btn-cancel" onclick="window.location.href='Student.html'">
+
+                            <i class="fa-solid fa-xmark"></i>
+                            Cancel
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        const API_BASE_URL = "http://localhost:8080/api/students";
+
+        // Get student id from the URL, e.g. Update.html?id=5
+        const params = new URLSearchParams(window.location.search);
+        const studentId = params.get("id");
+
+        document.addEventListener("DOMContentLoaded", loadStudentForEdit);
+
+        // Fetch existing student data and pre-fill the form
+        async function loadStudentForEdit() {
+            if (!studentId) {
+                alert("No student ID provided.");
+                window.location.href = "Student.html";
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/${studentId}`);
+
+                if (response.ok) {
+                    const student = await response.json();
+                    fillForm(student);
+                } else {
+                    alert("Student not found.");
+                    window.location.href = "Student.html";
+                }
+
+            } catch (error) {
+                console.error("Error loading student:", error);
+                alert("Could not connect to the server.");
+            }
+        }
+
+        function fillForm(student) {
+            document.getElementById("fullName").value = student.fullName;
+            document.getElementById("email").value = student.email;
+            document.getElementById("phone").value = student.phone;
+            document.getElementById("department").value = student.department;
+            document.getElementById("dob").value = student.dob; // must be yyyy-mm-dd
+            document.getElementById("address").value = student.address;
+
+            // Check the correct gender radio button
+            const genderRadio = document.querySelector(`input[name="gender"][value="${student.gender}"]`);
+            if (genderRadio) genderRadio.checked = true;
+        }
+
+        // Handle form submission → PUT request
+        document.getElementById("studentForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const genderInput = document.querySelector('input[name="gender"]:checked');
+
+            const studentData = {
+                fullName: document.getElementById("fullName").value.trim(),
+                email: document.getElementById("email").value.trim(),
+                phone: document.getElementById("phone").value.trim(),
+                department: document.getElementById("department").value,
+                dob: document.getElementById("dob").value,
+                address: document.getElementById("address").value.trim(),
+                gender: genderInput ? genderInput.value : ""
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/${studentId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(studentData)
+                });
+
+                if (response.ok) {
+                    const updatedStudent = await response.json();
+                    alert(`Student "${updatedStudent.fullName}" updated successfully`);
+                    window.location.href = "Student.html";
+
+                } else if (response.status === 400) {
+                    const errorBody = await response.json();
+                    alert("Validation error: " + JSON.stringify(errorBody));
+
+                } else if (response.status === 404) {
+                    alert("Student not found.");
+
+                } else {
+                    alert(`Error ${response.status}: Something went wrong.`);
+                }
+
+            } catch (error) {
+                console.error("Connection error:", error);
+                alert("Could not connect to the server. Is the backend running?");
+            }
+        });
+    </script>
+
+</body>
+
+</html>

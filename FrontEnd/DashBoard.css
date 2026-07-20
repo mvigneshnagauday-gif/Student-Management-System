@@ -1,0 +1,150 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+
+}
+
+.container {
+    display: flex;
+}
+
+.side-bar {
+    width: 250px;
+    height: 100vh;
+    background: #0A1F44;
+    color: white;
+    padding: 20px;
+}
+
+.side-bar h2 {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.side-bar ul {
+    list-style: none;
+}
+
+.side-bar ul li {
+    margin: 15px 0;
+}
+
+.side-bar ul li a {
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.side-bar ul li a:hover {
+    background: #1E40AF;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    background: #F5F7FA;
+
+}
+
+.navbar {
+    margin-bottom: 25px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rbga(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.dashboard-content {
+    margin-top: 30px;
+}
+
+.view-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 16px;
+    background: #1E40AF;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.view-btn:hover {
+    background: #2563EB;
+}
+
+.recent-students {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.recent-students h2 {
+    margin-bottom: collapse;
+
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+table th {
+    background: #0A1F44;
+    color: white;
+}
+
+.quick-actions {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.quick-actions button {
+    padding: 12px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #1E40AF;
+    color: white;
+    cursor: pointer;
+}
+
+.quick-actions button:hover {
+    background: #2563EB;
+}
