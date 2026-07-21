@@ -164,7 +164,7 @@
     </div>
 
     <script>
-        const API_BASE_URL = "http://localhost:8080/api/departments";
+        const API_BASE_URL = "https://student-management-system-0wic.onrender.com/api/departments";
 
         // Run as soon as the page loads
         document.addEventListener("DOMContentLoaded", loadDepartments);
@@ -173,7 +173,10 @@
         async function loadDepartments() {
             try {
                 const response = await fetch(API_BASE_URL);
-                if (!response.ok) throw new Error("Failed to fetch departments");
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch departments");
+                }
 
                 const departments = await response.json();
                 renderDepartments(departments);
@@ -185,10 +188,10 @@
             }
         }
 
-        // Build table rows dynamically from department data
+        // Build table rows dynamically
         function renderDepartments(departments) {
             const tbody = document.getElementById("departmentTableBody");
-            tbody.innerHTML = ""; // clear old/hardcoded/loading rows
+            tbody.innerHTML = "";
 
             if (departments.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5">No departments found.</td></tr>`;
@@ -197,76 +200,89 @@
 
             departments.forEach(dept => {
                 const row = document.createElement("tr");
+
                 row.innerHTML = `
-            <td>${dept.id}</td>
-            <td>${dept.name}</td>
-            <td>${dept.code}</td>
-            <td>${dept.description}</td>
-            <td>
-                <button class="view-btn" title="View" onclick="viewDepartment(${dept.id})">
-                    <i class="fa-solid fa-eye"></i>
-                </button>
-                <button class="edit-btn" title="Edit" onclick="editDepartment(${dept.id})">
-                    <i class="fa-solid fa-pen"></i>
-                </button>
-                <button class="delete-btn" title="Delete" onclick="deleteDepartment(${dept.id})">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </td>
-        `;
+                <td>${dept.id}</td>
+                <td>${dept.name}</td>
+                <td>${dept.code}</td>
+                <td>${dept.description}</td>
+                <td>
+                    <button class="view-btn" title="View" onclick="viewDepartment(${dept.id})">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+
+                    <button class="edit-btn" title="Edit" onclick="editDepartment(${dept.id})">
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+
+                    <button class="delete-btn" title="Delete" onclick="deleteDepartment(${dept.id})">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            `;
+
                 tbody.appendChild(row);
             });
         }
 
-        // Delete a department
+        // Delete Department
         async function deleteDepartment(id) {
             const confirmDelete = confirm("Are you sure you want to delete this department?");
+
             if (!confirmDelete) return;
 
             try {
-                const response = await fetch(`${API_BASE_URL}/${id}`, { method: "DELETE" });
+                const response = await fetch(`${API_BASE_URL}/${id}`, {
+                    method: "DELETE"
+                });
 
                 if (response.ok) {
                     alert("Department deleted successfully");
-                    loadDepartments(); // refresh the table
+                    loadDepartments();
                 } else {
                     alert("Failed to delete department");
                 }
+
             } catch (error) {
                 console.error("Delete error:", error);
                 alert("Could not connect to the server.");
             }
         }
 
-        // View department (redirect to a view page with id in URL)
+        // View Department
         function viewDepartment(id) {
             window.location.href = `ViewDepartment.html?id=${id}`;
         }
 
-        // Edit department (redirect to an edit page with id in URL)
+        // Edit Department
         function editDepartment(id) {
             window.location.href = `EditDepartment.html?id=${id}`;
         }
 
-        // Search functionality
+        // Search Department
         document.getElementById("searchDepartment").addEventListener("input", async function () {
+
             const keyword = this.value.trim();
 
             if (keyword === "") {
-                loadDepartments(); // reset to full list when search box is cleared
+                loadDepartments();
                 return;
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/search?keyword=${encodeURIComponent(keyword)}`);
+                const response = await fetch(
+                    `${API_BASE_URL}/search?keyword=${encodeURIComponent(keyword)}`
+                );
 
                 if (response.ok) {
                     const results = await response.json();
                     renderDepartments(results);
+
                 } else if (response.status === 404) {
                     document.getElementById("departmentTableBody").innerHTML =
                         `<tr><td colspan="5">No matching departments found.</td></tr>`;
                 }
+
             } catch (error) {
                 console.error("Search error:", error);
             }

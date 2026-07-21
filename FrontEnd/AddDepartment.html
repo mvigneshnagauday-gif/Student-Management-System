@@ -128,7 +128,7 @@
     </div>
 
     <script>
-        const API_BASE_URL = "http://localhost:8080/api/departments";
+        const API_BASE_URL = "https://student-management-system-0wic.onrender.com/api/departments";
 
         document.getElementById("departmentForm").addEventListener("submit", async function (e) {
             e.preventDefault();
@@ -142,27 +142,38 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/addDepartment`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify(departmentData)
                 });
 
                 if (response.ok) {
+
                     const saved = await response.json();
+
                     alert(`Department "${saved.name}" added successfully (ID: ${saved.id})`);
+
                     document.getElementById("departmentForm").reset();
+
                     window.location.href = "DepartmentList.html";
 
                 } else if (response.status === 400) {
+
                     const errorBody = await response.json();
                     alert("Validation error: " + JSON.stringify(errorBody));
 
                 } else {
+
                     alert(`Error ${response.status}: Something went wrong.`);
+
                 }
 
             } catch (error) {
+
                 console.error("Connection error:", error);
-                alert("Could not connect to the server. Is the backend running?");
+                alert("Could not connect to the server.");
+
             }
         });
     </script>

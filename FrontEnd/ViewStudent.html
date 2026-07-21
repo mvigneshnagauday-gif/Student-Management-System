@@ -143,7 +143,7 @@
     </div>
 
     <script>
-        const API_BASE_URL = "http://localhost:8080/api/students";
+        const API_BASE_URL = "https://student-management-system-0wic.onrender.com/api/students";
 
         // Get the id from the URL, e.g. ViewStudent.html?id=5
         const params = new URLSearchParams(window.location.search);
@@ -175,7 +175,7 @@
 
             } catch (error) {
                 console.error("Connection error:", error);
-                alert("Could not connect to the server. Is the backend running?");
+                alert("Could not connect to the server.");
             }
         }
 

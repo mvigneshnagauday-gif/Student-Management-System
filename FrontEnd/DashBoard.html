@@ -114,9 +114,9 @@
     </div>
 
     <script>
-        const STUDENT_API = "http://localhost:8080/api/students";
-        const DEPARTMENT_API = "http://localhost:8080/api/departments";
-        const DASHBOARD_API = "http://localhost:8080/api/dashboard";
+        const STUDENT_API = "https://student-management-system-0wic.onrender.com/api/students";
+        const DEPARTMENT_API = "https://student-management-system-0wic.onrender.com/api/departments";
+        const DASHBOARD_API = "https://student-management-system-0wic.onrender.com/api/dashboard";
 
         document.addEventListener("DOMContentLoaded", () => {
             loadSummary();
@@ -127,16 +127,22 @@
         async function loadSummary() {
             try {
                 const response = await fetch(`${DASHBOARD_API}/summary`);
-                if (!response.ok) throw new Error("Failed to fetch summary");
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch summary");
+                }
 
                 const summary = await response.json();
+
                 document.getElementById("totalStudents").textContent = summary.totalStudents;
                 document.getElementById("totalDepartments").textContent = summary.totalDepartments;
-                document.getElementById("totalCourses").textContent = summary.totalDepartments; // reused as courses count
+                document.getElementById("totalCourses").textContent = summary.totalDepartments;
                 document.getElementById("totalFaculty").textContent = summary.totalFaculty;
 
             } catch (error) {
+
                 console.error("Error loading summary:", error);
+
                 document.getElementById("totalStudents").textContent = "N/A";
                 document.getElementById("totalDepartments").textContent = "N/A";
                 document.getElementById("totalCourses").textContent = "N/A";
@@ -144,15 +150,21 @@
             }
         }
 
+        // Load recent students
         async function loadRecentStudents() {
+
             const tbody = document.getElementById("recentStudentsBody");
 
             try {
+
                 const response = await fetch(`${STUDENT_API}/getallstudentDetails`);
-                if (!response.ok) throw new Error("Failed to fetch students");
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch students");
+                }
 
                 const students = await response.json();
-                const recent = students.slice(-5).reverse(); // last 5 added, newest first
+                const recent = students.slice(-5).reverse();
 
                 tbody.innerHTML = "";
 
@@ -162,18 +174,23 @@
                 }
 
                 recent.forEach(student => {
+
                     const row = document.createElement("tr");
+
                     row.innerHTML = `
-                        <td>${student.id}</td>
-                        <td>${student.fullName}</td>
-                        <td>${student.department}</td>
-                        <td>${student.email}</td>
-                    `;
+                    <td>${student.id}</td>
+                    <td>${student.fullName}</td>
+                    <td>${student.department}</td>
+                    <td>${student.email}</td>
+                `;
+
                     tbody.appendChild(row);
                 });
 
             } catch (error) {
+
                 console.error("Error loading recent students:", error);
+
                 tbody.innerHTML = `<tr><td colspan="4">Could not load students.</td></tr>`;
             }
         }

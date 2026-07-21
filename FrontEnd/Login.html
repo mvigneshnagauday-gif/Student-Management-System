@@ -57,65 +57,67 @@
     </div>
 
     <script>
-        const API_BASE_URL = "http://localhost:8080/api/auth";
 
-        document.getElementById("loginForm")
-            .addEventListener("submit", async function (event) {
+        // Replace this URL with your actual Render backend URL
+        const API_BASE_URL = "https://student-management-backend.onrender.com/api/auth";
 
-                event.preventDefault();
+        document.getElementById("loginForm").addEventListener("submit", async function (event) {
 
-                const loginData = {
-                    username: document.getElementById("username").value.trim(),
-                    password: document.getElementById("password").value
-                };
+            event.preventDefault();
 
-                try {
-                    const response = await fetch(`${API_BASE_URL}/login`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(loginData)
-                    });
+            const loginData = {
+                username: document.getElementById("username").value.trim(),
+                password: document.getElementById("password").value
+            };
 
-                    if (response.ok) {
-                        const result = await response.json();
+            try {
 
-                        // Store basic session info for this browser tab
-                        sessionStorage.setItem("username", result.username);
-                        sessionStorage.setItem("role", result.role);
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(loginData)
+                });
 
-                        alert(`Welcome, ${result.username}! (${result.role})`);
+                if (response.ok) {
 
-                        // Redirect based on role
-                        if (result.role === "ADMIN") {
-                            window.location.href = "Dashboard.html";
-                        } else if (result.role === "FACULTY") {
-                            window.location.href = "Dashboard.html"; // same dashboard for now
-                        } else if (result.role === "STUDENT") {
-                            window.location.href = "Dashboard.html"; // same dashboard for now
-                        } else {
-                            window.location.href = "Dashboard.html";
-                        }
+                    const result = await response.json();
 
-                    } else if (response.status === 401) {
-                        const errorBody = await response.json();
-                        alert(errorBody.error || "Invalid username or password");
+                    sessionStorage.setItem("username", result.username);
+                    sessionStorage.setItem("role", result.role);
 
-                    } else if (response.status === 400) {
-                        const errorBody = await response.json();
-                        alert("Please check your input: " + JSON.stringify(errorBody));
+                    alert(`Welcome, ${result.username}! (${result.role})`);
 
-                    } else {
-                        alert(`Error ${response.status}: Something went wrong.`);
-                    }
+                    window.location.href = "Dashboard.html";
 
-                } catch (error) {
-                    console.error("Error:", error);
-                    alert("Could not connect to the server. Is the backend running?");
+                }
+                else if (response.status === 401) {
+
+                    const errorBody = await response.json();
+                    alert(errorBody.error || "Invalid username or password");
+
+                }
+                else if (response.status === 400) {
+
+                    const errorBody = await response.json();
+                    alert("Please check your input: " + JSON.stringify(errorBody));
+
+                }
+                else {
+
+                    alert(`Error ${response.status}: Something went wrong.`);
+
                 }
 
-            });
+            } catch (error) {
+
+                console.error(error);
+                alert("Unable to connect to the server.");
+
+            }
+
+        });
 
     </script>
 

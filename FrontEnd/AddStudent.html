@@ -231,12 +231,13 @@
 
     </div>
     <script>
-        const API_BASE_URL = "http://localhost:8080/api/students";
+        const API_BASE_URL = "https://student-management-system-0wic.onrender.com/api/students";
 
         document.getElementById("studentForm").addEventListener("submit", async function (e) {
             e.preventDefault();
 
             const genderInput = document.querySelector('input[name="gender"]:checked');
+
             const studentData = {
                 fullName: document.getElementById("fullName").value.trim(),
                 email: document.getElementById("email").value.trim(),
@@ -250,27 +251,37 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/addStudent`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify(studentData)
                 });
 
                 if (response.ok) {
                     const savedStudent = await response.json();
+
                     alert(`Student "${savedStudent.fullName}" added successfully (ID: ${savedStudent.id})`);
+
                     document.getElementById("studentForm").reset();
+
                     window.location.href = "Student.html";
 
                 } else if (response.status === 400) {
+
                     const errorBody = await response.json();
                     alert("Validation error: " + JSON.stringify(errorBody));
 
                 } else {
+
                     alert(`Error ${response.status}: Something went wrong.`);
+
                 }
 
             } catch (error) {
+
                 console.error("Connection error:", error);
-                alert("Could not connect to the server. Is the backend running?");
+                alert("Could not connect to the server.");
+
             }
         });
     </script>

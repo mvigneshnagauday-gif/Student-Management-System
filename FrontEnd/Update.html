@@ -232,7 +232,7 @@
     </div>
 
     <script>
-        const API_BASE_URL = "http://localhost:8080/api/students";
+        const API_BASE_URL = "https://student-management-system-0wic.onrender.com/api/students";
 
         // Get student id from the URL, e.g. Update.html?id=5
         const params = new URLSearchParams(window.location.search);
@@ -270,12 +270,16 @@
             document.getElementById("email").value = student.email;
             document.getElementById("phone").value = student.phone;
             document.getElementById("department").value = student.department;
-            document.getElementById("dob").value = student.dob; // must be yyyy-mm-dd
+            document.getElementById("dob").value = student.dob;
             document.getElementById("address").value = student.address;
 
-            // Check the correct gender radio button
-            const genderRadio = document.querySelector(`input[name="gender"][value="${student.gender}"]`);
-            if (genderRadio) genderRadio.checked = true;
+            const genderRadio = document.querySelector(
+                `input[name="gender"][value="${student.gender}"]`
+            );
+
+            if (genderRadio) {
+                genderRadio.checked = true;
+            }
         }
 
         // Handle form submission → PUT request
@@ -297,7 +301,9 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/${studentId}`, {
                     method: "PUT",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify(studentData)
                 });
 
@@ -319,7 +325,7 @@
 
             } catch (error) {
                 console.error("Connection error:", error);
-                alert("Could not connect to the server. Is the backend running?");
+                alert("Could not connect to the server.");
             }
         });
     </script>
